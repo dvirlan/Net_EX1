@@ -2,21 +2,19 @@ import socket
 import sys
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
 def main():
-    param1 = sys.argv[1];
+    port = sys.argv[1]
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.bind(('', int(port)))
+    users_info = {}
+    users_messages = {}
 
 
-
-
-
-
+    while True:
+        data, addr = s.recvfrom(1024)
+        print(str(data), addr)
+        s.sendto(data.upper(), addr)
 
 
 if __name__ == '__main__':
     main()
-
-
