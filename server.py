@@ -1,7 +1,8 @@
 import socket
 import sys
 
-users_info = {}
+users_info = {"raz": ("add_raz", ["m1"]),
+              "david": ("add_david", ["m2"])}
 
 
 def main():
@@ -10,21 +11,21 @@ def main():
     s.bind(('', int(port)))
 
     while True:
-        #data, addr = s.recvfrom(1024)
-        data = "1 DANIEL"
-        addr = "add1"
-        l = str(data).split(" ", 1)
-        option = int(l[0])
-        if len(l) > 1:
-            name = l[1]
-        if option == 1:
+        data, addr = s.recvfrom(1024)
+        print(data, addr)
+        splitter_list = str(data).split(" ", 1)
+        option = splitter_list[0]
+        str1 = ""
+        if len(splitter_list) > 1:
+            name = splitter_list[1]
+        if option == "1":
             for user_name in users_info:
                 users_info[user_name][1].append(name + " has joined")
+                str1 += user_name + ", "
+            new_str = str1[:len(str1)-2]
+            print(new_str)
+            s.sendto(new_str, addr)
             users_info[name] = (addr, [])
-        print(users_info)
-        #print(str(data), addr)
-        #s.sendto(data.upper(), addr)
-
 
 if __name__ == '__main__':
     main()

@@ -7,7 +7,7 @@ def main():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     while True:
         prompt = input()
-        s.sendto(prompt, (ip_server, int(port_server)))
+        s.sendto(prompt.encode('utf-8'), (ip_server, int(port_server)))
         if prompt == '4':
             break
         data, addr = s.recvfrom(1024)
