@@ -18,13 +18,9 @@ def join_group(name, new_addr, sock):
     print(users_info)
 
 
-def send_message(message, addr):
-    name = ""
+def send_message(message, name):
     for user_name in users_info:
-        if users_info[user_name][0] == addr:
-            name = user_name
-    for user_name in users_info:
-        if users_info[user_name][0] != addr:
+        if user_name != name:
             users_info[user_name][1].append(name + ": " + message)
     print(users_info)
 
@@ -40,15 +36,12 @@ def change_name(new_name, old_name):
     print(users_info)
 
 
-def leave_group(addr):
-    name = ""
-    for user_name in users_info:
-        if users_info[user_name][0] == addr:
-            name = user_name
+def leave_group(name):
     users_info.pop(name)
     for user_name in users_info:
         users_info[user_name][1].append(name + "  has left the group")
     print(users_info)
+
 
 def main():
     port = sys.argv[1]
@@ -66,11 +59,12 @@ def main():
             original_name = name
             join_group(name, addr, s)
         elif option == "2":
-            send_message(name, addr)
+            send_message(name, original_name)
         elif option == "3":
             change_name(name, original_name)
         elif option == "4":
-            leave_group(addr)
+            leave_group(original_name)
+
 
 if __name__ == '__main__':
     main()
