@@ -40,6 +40,16 @@ def change_name(new_name, old_name):
     print(users_info)
 
 
+def leave_group(addr):
+    name = ""
+    for user_name in users_info:
+        if users_info[user_name][0] == addr:
+            name = user_name
+    users_info.pop(name)
+    for user_name in users_info:
+        users_info[user_name][1].append(name + "  has left the group")
+    print(users_info)
+
 def main():
     port = sys.argv[1]
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -59,7 +69,8 @@ def main():
             send_message(name, addr)
         elif option == "3":
             change_name(name, original_name)
-
+        elif option == "4":
+            leave_group(addr)
 
 if __name__ == '__main__':
     main()
