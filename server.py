@@ -18,6 +18,17 @@ def join_group(name, new_addr, sock):
     print(users_info)
 
 
+def send_message(message, addr):
+    name = ""
+    for user_name in users_info:
+        if users_info[user_name][0] == addr:
+            name = user_name
+    for user_name in users_info:
+        if users_info[user_name][0] != addr:
+            users_info[user_name][1].append(name + ": " + message)
+    print(users_info)
+
+
 def change_name(new_name, old_name):
     for user_name in users_info:
         if user_name == old_name:
@@ -44,6 +55,8 @@ def main():
         if option == "1":
             original_name = name
             join_group(name, addr, s)
+        elif option == "2":
+            send_message(name, addr)
         elif option == "3":
             change_name(name, original_name)
 
