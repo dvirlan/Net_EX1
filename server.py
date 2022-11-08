@@ -13,9 +13,20 @@ def join_group(name, new_addr, sock):
         str1 += user_name + ", "
     group_names = str1[:len(str1) - 2]
     print(group_names)
-    print(users_info)
     sock.sendto(group_names.encode(), new_addr)
     users_info[name] = (new_addr, [])
+    print(users_info)
+
+
+def change_name(new_name, old_name):
+    for user_name in users_info:
+        if user_name == old_name:
+            users_info[new_name] = users_info.pop(old_name)
+            break
+    for user_name in users_info:
+        if user_name != new_name:
+            users_info[user_name][1].append(old_name + " changed his name to " + new_name)
+    print(users_info)
 
 
 def main():
@@ -31,7 +42,10 @@ def main():
         if len(splitter_list) > 1:
             name = splitter_list[1]
         if option == "1":
+            original_name = name
             join_group(name, addr, s)
+        elif option == "3":
+            change_name(name, original_name)
 
 
 if __name__ == '__main__':
