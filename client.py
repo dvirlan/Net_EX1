@@ -11,8 +11,8 @@ def main():
         if prompt == '4':
             break
         data, addr = s.recvfrom(1024)
-
-        print(data.decode())
+        if data.decode() != "":
+            print(data.decode())
     s.close()
 
 

@@ -1,38 +1,41 @@
 import socket
 import sys
 
-users_info = {"raz": ("add_raz", ["m1"]),
-              "david": ("add_david", ["m2"])}
+users_info = {"address_raz": ("raz", ["m1"]),
+              "address_david": ("david", ["m2"])}
 
 
 def join_group(name, new_addr, sock):
     str1 = ""
     print("start opt 1")
-    for user_name in users_info:
-        users_info[user_name][1].append(name + " has joined")
-        str1 += user_name + ", "
+    for user_address in users_info:
+        users_info[user_address][1].append(name + " has joined")
+        str1 += users_info[user_address][0] + ", "
     group_names = str1[:len(str1) - 2]
     print(group_names)
     sock.sendto(group_names.encode(), new_addr)
-    users_info[name] = (new_addr, [])
+    users_info[new_addr] = (name, [])
     print(users_info)
 
 
-def send_message(message, name):
-    for user_name in users_info:
-        if user_name != name:
-            users_info[user_name][1].append(name + ": " + message)
+def send_message(message, address, sock):
+    for user_address in users_info:
+        if user_address != address:
+            users_info[user_address][1].append(users_info[address][0] + ": " + message)
     print(users_info)
+    sock.sendto("".encode(), address)
 
 
-def change_name(new_name, old_name):
-    for user_name in users_info:
-        if user_name == old_name:
-            users_info[new_name] = users_info.pop(old_name)
+def change_name(new_name, address):
+    for user_address in users_info:
+        if user_address == address:
+            old_name = users_info[address][0]
+            new_t = (new_name, users_info[address][1])
+            users_info[address] = new_t
             break
-    for user_name in users_info:
-        if user_name != new_name:
-            users_info[user_name][1].append(old_name + " changed his name to " + new_name)
+    for user_address in users_info:
+        if user_address != address:
+            users_info[user_address][1].append(old_name + " changed his name to " + new_name)
     print(users_info)
 
 
@@ -52,16 +55,15 @@ def main():
         data, addr = s.recvfrom(1024)
         splitter_list = data.decode().split(" ", 1)
         option = splitter_list[0]
-        str1 = ""
         if len(splitter_list) > 1:
-            name = splitter_list[1]
+            arg2 = splitter_list[1]
         if option == "1":
-            original_name = name
-            join_group(name, addr, s)
+            original_name = arg2
+            join_group(arg2, addr, s)
         elif option == "2":
-            send_message(name, original_name)
+            send_message(arg2, addr, s)
         elif option == "3":
-            change_name(name, original_name)
+            change_name(arg2, addr)
         elif option == "4":
             leave_group(original_name)
 
