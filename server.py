@@ -2,9 +2,10 @@ import socket
 import sys
 
 users_info = {}
+
+
 # {"address_raz": ("raz", ["m1"]),
 #               "address_david": ("david", ["m2"])}
-
 
 def concat_messages(address):
     full_message = ""
@@ -26,7 +27,7 @@ def join_group(name, new_addr, sock):
     print(group_names)
     sock.sendto(group_names.encode(), new_addr)
     users_info[new_addr] = (name, [])
-    print(users_info)
+    # print(users_info)
 
 
 def send_message(message, address, sock):
@@ -34,8 +35,7 @@ def send_message(message, address, sock):
         if user_address != address:
             users_info[user_address][1].append(users_info[address][0] + ": " + message)
     sock.sendto(concat_messages(address).encode(), address)
-    print(users_info)
-
+    # print(users_info)
 
 
 def change_name(new_name, address, sock):
@@ -50,7 +50,7 @@ def change_name(new_name, address, sock):
             users_info[user_address][1].append(old_name + " changed his name to " + new_name)
     sock.sendto(concat_messages(address).encode(), address)
 
-    print(users_info)
+    # print(users_info)
 
 
 def leave_group(address):
@@ -58,7 +58,7 @@ def leave_group(address):
     users_info.pop(address)
     for user_address in users_info:
         users_info[user_address][1].append(left_name + " has left the group")
-    print(users_info)
+    # print(users_info)
 
 
 def main():
@@ -69,10 +69,15 @@ def main():
     while True:
         data, addr = s.recvfrom(1024)
         splitter_list = data.decode().split(" ", 1)
-        option = splitter_list[0]
+
+        option = splitter_list[0].lstrip()
+        arg2 = ""
         if len(splitter_list) > 1:
-            arg2 = splitter_list[1]
-        if option == "1":
+            arg2 = splitter_list[1].lstrip()
+        if ((option == "1" or option == "2" or option == "3") and arg2 == "") or (
+                addr not in users_info and option != "1") :
+            s.sendto("Illegal request".encode(), addr)
+        elif option == "1":
             join_group(arg2, addr, s)
         elif option == "2":
             send_message(arg2, addr, s)
@@ -84,7 +89,6 @@ def main():
             s.sendto(concat_messages(addr).encode(), addr)
         else:
             s.sendto("Illegal request".encode(), addr)
-
 
 
 if __name__ == '__main__':
