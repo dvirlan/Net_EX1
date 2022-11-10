@@ -20,8 +20,10 @@ def concat_messages(address):
 
 def join_group(name, new_addr, sock):
     str1 = ""
+    # add a message to everyone that the new user has joined
     for user_address in users_info:
         users_info[user_address][1].append(name + " has joined")
+        # create a string that names all participants.
         str1 += users_info[user_address][0] + ", "
     group_names = str1[:len(str1) - 2]
     # print(group_names)
@@ -32,8 +34,10 @@ def join_group(name, new_addr, sock):
 
 def send_message(message, address, sock):
     for user_address in users_info:
+        # add a message to everyone's list except the sender
         if user_address != address:
             users_info[user_address][1].append(users_info[address][0] + ": " + message)
+    # send all his remained messages to the client
     sock.sendto(concat_messages(address).encode(), address)
     # print(users_info)
 
@@ -67,9 +71,11 @@ def leave_group(address):
 
 def main():
     # get the port from user, create a socket and bind the port to the socket
-    port = sys.argv[1]
+    port = int(sys.argv[1])
+    if port < 0 or port > 65535:
+        return
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.bind(('', int(port)))
+    s.bind(('', port))
     # every loop the sever serve a request from a client
     while True:
         data, addr = s.recvfrom(1024)
