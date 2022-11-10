@@ -89,7 +89,7 @@ def main():
         # check if the client sent Illegal request - operation that needs registration before or
         # missing a 2nd arg when it's needed for the operartion
         if ((option == "1" or option == "2" or option == "3") and arg2 == "") or (
-                addr not in users_info and option != "1") :
+                addr not in users_info and option != "1") or (addr in users_info and option == "1"):
             s.sendto("Illegal request".encode(), addr)
         # go to the appropriate function according to the client's option
         elif option == "1":
