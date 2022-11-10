@@ -45,9 +45,11 @@ def change_name(new_name, address, sock):
             new_t = (new_name, users_info[address][1])
             users_info[address] = new_t
             break
+    # add a message to everyone (except the user that changed his name) that the user changed his name.
     for user_address in users_info:
         if user_address != address:
             users_info[user_address][1].append(old_name + " changed his name to " + new_name)
+    # send all his remained messages to the client
     sock.sendto(concat_messages(address).encode(), address)
 
     # print(users_info)
@@ -55,7 +57,9 @@ def change_name(new_name, address, sock):
 
 def leave_group(address):
     left_name = users_info[address][0]
+    # remove the user from the dict
     users_info.pop(address)
+    # add a message to everyone (except the user that left the group) that the user left the group.
     for user_address in users_info:
         users_info[user_address][1].append(left_name + " has left the group")
     # print(users_info)
@@ -76,7 +80,7 @@ def main():
         arg2 = ""
         # check if there is 2nd arg and save it
         if len(splitter_list) > 1:
-            arg2 = splitter_list[1].lstrip()
+            arg2 = splitter_list[1]
         # check if the client sent Illegal request - operation that needs registration before or
         # missing a 2nd arg when it's needed for the operartion
         if ((option == "1" or option == "2" or option == "3") and arg2 == "") or (
