@@ -24,7 +24,7 @@ def join_group(name, new_addr, sock):
         users_info[user_address][1].append(name + " has joined")
         str1 += users_info[user_address][0] + ", "
     group_names = str1[:len(str1) - 2]
-    print(group_names)
+    # print(group_names)
     sock.sendto(group_names.encode(), new_addr)
     users_info[new_addr] = (name, [])
     # print(users_info)
@@ -62,18 +62,23 @@ def leave_group(address):
 
 
 def main():
+    # get the port from user, create a socket and bind the port to the socket
     port = sys.argv[1]
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.bind(('', int(port)))
-
+    # every loop the sever serve a request from a client
     while True:
         data, addr = s.recvfrom(1024)
+        # split the request into 2 parts
         splitter_list = data.decode().split(" ", 1)
 
         option = splitter_list[0].lstrip()
         arg2 = ""
+        # check if there is 2nd arg and save it
         if len(splitter_list) > 1:
             arg2 = splitter_list[1].lstrip()
+        # check if the client sent Illegal request - operation that needs registration before or
+        # missing a 2nd arg when it's needed for the operartion
         if ((option == "1" or option == "2" or option == "3") and arg2 == "") or (
                 addr not in users_info and option != "1") :
             s.sendto("Illegal request".encode(), addr)
@@ -86,6 +91,7 @@ def main():
         elif option == "4":
             leave_group(addr)
         elif option == "5":
+            # send all his remained messages to the client
             s.sendto(concat_messages(addr).encode(), addr)
         else:
             s.sendto("Illegal request".encode(), addr)
