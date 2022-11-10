@@ -1,11 +1,10 @@
 import socket
 import sys
-
+# the user dict has a key of client's address and his value is a tuple
+# consists of his name and a list of his current left messages
+# for example,  {"address_raz": ("raz", ["m1"]),
+#                "address_david": ("david", ["m2"])}
 users_info = {}
-
-
-# {"address_raz": ("raz", ["m1"]),
-#               "address_david": ("david", ["m2"])}
 
 def concat_messages(address):
     full_message = ""
@@ -92,6 +91,7 @@ def main():
         if ((option == "1" or option == "2" or option == "3") and arg2 == "") or (
                 addr not in users_info and option != "1") :
             s.sendto("Illegal request".encode(), addr)
+        # go to the appropriate function according to the client's option
         elif option == "1":
             join_group(arg2, addr, s)
         elif option == "2":
