@@ -1,10 +1,12 @@
 import socket
 import sys
+
 # the user dict has a key of client's address and his value is a tuple
 # consists of his name and a list of his current left messages
 # for example,  {"address_raz": ("raz", ["m1"]),
 #                "address_david": ("david", ["m2"])}
 users_info = {}
+
 
 def concat_messages(address):
     full_message = ""
@@ -20,7 +22,7 @@ def concat_messages(address):
 def join_group(name, new_addr, sock):
     str1 = ""
     # add a message to everyone that the new user has joined
-    for user_address in users_info:
+    for user_address in reversed(users_info):
         users_info[user_address][1].append(name + " has joined")
         # create a string that names all participants.
         str1 += users_info[user_address][0] + ", "
