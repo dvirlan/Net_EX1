@@ -1,6 +1,8 @@
 import socket
 import sys
 
+# created by Dvir Landau and Daniel Meir Karl
+
 # the user dict has a key of client's address and his value is a tuple
 # consists of his name and a list of his current left messages
 # for example,  {"address_raz": ("raz", ["m1"]),

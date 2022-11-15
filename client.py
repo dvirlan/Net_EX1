@@ -2,6 +2,8 @@ import socket
 import sys
 
 
+# created by Dvir Landau and Daniel Meir Karl
+
 def main():
     # get from the user args the ip and the port of the server
     ip_server, port_server = sys.argv[1], int(sys.argv[2])
